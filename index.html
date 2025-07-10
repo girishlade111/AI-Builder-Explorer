@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI App & Website Builder Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Tech (Off-white, Slate, Muted Blue Accent) -->
+    <!-- Application Structure Plan: The application is designed as an interactive dashboard, moving away from the linear structure of the source report. The core is a filterable "Tool Explorer" that allows users to dynamically find tools based on their needs (role, features, category). This is more user-centric than reading a report, as it directly answers the user's primary question: "Which tool is right for me?". The structure includes: 1) A hero section to set the context. 2) An interactive filtering system and card grid for exploration. 3) A dedicated, visual comparison section for key archetypes. 4) A "Decision Helper" to transform the report's static matrix into an interactive guide. 5) A final section on future trends. This task-oriented design prioritizes user discovery and decision-making over passive reading. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Full list of AI builder platforms -> Goal: Organize/Compare -> Viz/Method: Interactive Card Grid with Filters -> Interaction: Users click filters (Category, Role, Features) to instantly narrow down the list of tools. Clicking a card opens a detailed modal. -> Justification: This is the most effective way to handle a large list of items, empowering the user to find relevant information quickly.
+        - Report Info: Pricing data ($/month) -> Goal: Compare -> Viz/Method: Bar Chart (Chart.js) -> Interaction: Hover tooltips show specific pricing details. -> Justification: A bar chart provides an immediate visual comparison of relative costs, which is easier to grasp than a table.
+        - Report Info: Decision Framework Matrix -> Goal: Inform/Guide -> Viz/Method: Interactive HTML Grid -> Interaction: Users click their project type and key driver to get a specific tool recommendation highlighted. -> Justification: Turns a static, hard-to-parse table into a simple, engaging "wizard" that provides a personalized answer.
+        - Report Info: Head-to-head comparison (Lovable vs. Bolt) -> Goal: Compare -> Viz/Method: Side-by-side feature list in a modal. -> Justification: A direct, side-by-side view is the clearest way to compare two specific items in detail.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #334155;
+        }
+        .active-filter {
+            background-color: #387ADF !important;
+            color: #ffffff !important;
+            border-color: #387ADF !important;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 400px;
+            max-height: 50vh;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl font-bold text-slate-800">AI Builder Explorer</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#explorer" class="text-sm font-medium text-slate-600 hover:text-blue-600">Tool Explorer</a>
+                    <a href="#comparison" class="text-sm font-medium text-slate-600 hover:text-blue-600">Comparison</a>
+                    <a href="#decision-helper" class="text-sm font-medium text-slate-600 hover:text-blue-600">Decision Helper</a>
+                    <a href="#outlook" class="text-sm font-medium text-slate-600 hover:text-blue-600">Future Outlook</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="py-16 sm:py-20 text-center bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">The Generative Development Revolution</h1>
+                <p class="mt-6 text-lg text-slate-600 max-w-3xl mx-auto">From visual editors to conversational co-pilots, a new wave of AI-powered tools is changing how we build software. This interactive guide helps you navigate the landscape and find the right builder for your next project.</p>
+            </div>
+        </section>
+
+        <section id="explorer" class="py-16 sm:py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Interactive Tool Explorer</h2>
+                    <p class="mt-4 text-lg text-slate-600">Filter the list of AI builders to find the one that fits your needs.</p>
+                </div>
+
+                <div id="filters" class="mt-12 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-800">Builder Category</h3>
+                        <div id="category-filters" class="mt-4 flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-800">I am a... (Role)</h3>
+                        <div id="role-filters" class="mt-4 flex flex-wrap gap-2"></div>
+                    </div>
+                     <div>
+                        <h3 class="text-lg font-semibold text-slate-800">Key Features</h3>
+                        <div id="feature-filters" class="mt-4 flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+                <div id="tool-grid" class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                </div>
+            </div>
+        </section>
+        
+        <section id="comparison" class="py-16 sm:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Platform Comparison</h2>
+                    <p class="mt-4 text-lg text-slate-600">Visualize how different AI builders stack up on key metrics.</p>
+                </div>
+                <div class="mt-12">
+                     <h3 class="text-xl font-semibold text-center text-slate-800">Starting Price for Paid Plans (Monthly)</h3>
+                     <div class="chart-container mt-6">
+                        <canvas id="pricingChart"></canvas>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="decision-helper" class="py-16 sm:py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Decision Helper</h2>
+                    <p class="mt-4 text-lg text-slate-600">Not sure where to start? Click a project type and your key driver to see our recommendation.</p>
+                </div>
+                <div id="decision-matrix" class="mt-12 overflow-x-auto">
+                </div>
+            </div>
+        </section>
+
+        <section id="outlook" class="py-16 sm:py-20 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Future Outlook</h2>
+                    <p class="mt-4 text-lg text-slate-600">The market is evolving fast. Here are the key trends shaping the future of AI-driven development.</p>
+                </div>
+                <div class="mt-12 grid md:grid-cols-2 gap-8">
+                    <div class="p-6 bg-slate-50 rounded-lg">
+                        <h3 class="font-semibold text-slate-800">The Rise of the AI Orchestrator</h3>
+                        <p class="mt-2 text-slate-600 text-sm">The developer's role is shifting from writing code to architecting systems and guiding AI agents, making high-level product vision more valuable than ever.</p>
+                    </div>
+                     <div class="p-6 bg-slate-50 rounded-lg">
+                        <h3 class="font-semibold text-slate-800">Squeeze on Low-End Web Development</h3>
+                        <p class="mt-2 text-slate-600 text-sm">AI tools that build simple sites in minutes will pressure the market for template-based freelance work, pushing developers towards more complex, high-value tasks.</p>
+                    </div>
+                     <div class="p-6 bg-slate-50 rounded-lg">
+                        <h3 class="font-semibold text-slate-800">Open-Source & "Bring Your Own AI"</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Open-source solutions like `bolt.diy` signal a move towards platforms where users can plug in their own LLM API keys, offering more control and reducing vendor lock-in.</p>
+                    </div>
+                     <div class="p-6 bg-slate-50 rounded-lg">
+                        <h3 class="font-semibold text-slate-800">Convergence and Consolidation</h3>
+                        <p class="mt-2 text-slate-600 text-sm">The lines between AI-native generators and traditional no-code platforms will blur as they adopt each other's features, leading to a more competitive and consolidated market.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-slate-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400">
+            <p>Interactive report generated from "The Generative Development Revolution: A Comparative Analysis of Freemium AI App & Website Builders".</p>
+            <p class="mt-2">This is a conceptual application and data is based on the source report.</p>
+        </div>
+    </footer>
+    
+    <div id="modal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 opacity-0 pointer-events-none">
+        <div class="modal-content transform -translate-y-10 max-w-3xl w-full mx-4 bg-white rounded-lg shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 id="modal-title" class="text-xl font-bold text-slate-800"></h3>
+                <button id="modal-close" class="text-slate-500 hover:text-slate-800">&times;</button>
+            </div>
+            <div id="modal-body" class="p-6 max-h-[80vh] overflow-y-auto">
+            </div>
+        </div>
+    </div>
+
+<script>
+const toolData = [
+    {
+        id: 'lovable',
+        name: 'Lovable.dev',
+        category: 'AI-Native Generator',
+        role: ['Non-Technical Founder', 'Product Team'],
+        features: ['Full-Stack', 'Code Export (GitHub)', 'Rapid MVP'],
+        tagline: 'The AI as a full-stack engineer for rapid prototyping and idea validation.',
+        price: 25,
+        freemium: 'Limited credits for public projects.',
+        stack: 'React, Tailwind CSS, Vite, with a mandatory and deeply integrated Supabase backend.',
+        strengths: 'Extreme speed for MVP creation, simplicity for non-coders, full code ownership via GitHub.',
+        weaknesses: 'Limited to Supabase backend, less granular control over environment, credit model can be costly for iteration.',
+        codeExport: true,
+    },
+    {
+        id: 'bolt',
+        name: 'Bolt.new',
+        category: 'AI-Native Generator',
+        role: ['Developer'],
+        features: ['Full-Stack', 'Code Export (GitHub)', 'In-Browser IDE', 'Open Source Option'],
+        tagline: 'The AI as a developer\'s co-pilot, automating workflows in a full IDE.',
+        price: 20,
+        freemium: '1M tokens/month with a 150k daily limit.',
+        stack: 'Framework-agnostic (React, Vue, Next.js, etc.) running in a browser-based Node.js environment (WebContainers).',
+        strengths: 'Eliminates local setup, full developer control in-browser, AI-powered debugging, framework flexibility.',
+        weaknesses: 'Token usage can be high and unpredictable, potential performance challenges in-browser for very large projects.',
+        codeExport: true,
+    },
+    {
+        id: 'replit',
+        name: 'Replit Agent',
+        category: 'AI-Native Generator',
+        role: ['Developer', 'Non-Technical Founder'],
+        features: ['Full-Stack', 'Code Export (GitHub)', 'In-Browser IDE', 'Rapid MVP'],
+        tagline: 'An entire team of software engineers on demand in a mature cloud IDE.',
+        price: 20,
+        freemium: 'Limited Agent trial and basic AI assistance.',
+        stack: 'Any Node.js framework within the Replit cloud environment.',
+        strengths: 'Mature platform, builds from screenshots, collaborative, targets a wide audience.',
+        weaknesses: 'Full AI agent power requires a paid plan.',
+        codeExport: true,
+    },
+    {
+        id: 'softgen',
+        name: 'Softgen',
+        category: 'AI-Native Generator',
+        role: ['Developer', 'Product Team'],
+        features: ['Full-Stack', 'Code Export (GitHub)', 'In-Browser IDE', 'Rapid MVP'],
+        tagline: 'Create production-ready Full Stack Web Apps with a built-in IDE for edits.',
+        price: 25,
+        freemium: '100k tokens for 1 project (no Supabase).',
+        stack: 'Next.js frontend, integrates with Supabase and Firebase.',
+        strengths: 'Generates modern stack, allows manual code editing, good for startups.',
+        weaknesses: 'Free tier is very limited (lacks backend integration).',
+        codeExport: true,
+    },
+    {
+        id: 'v0',
+        name: 'v0.dev by Vercel',
+        category: 'AI-Powered UI Specialist',
+        role: ['Developer', 'Designer'],
+        features: ['Frontend Only', 'Code Export (Copy/Paste)'],
+        tagline: 'Generates high-quality, copy-paste-friendly React/Tailwind UI components.',
+        price: 20,
+        freemium: 'Generous free credits for UI component generation.',
+        stack: 'Generates code for React, Tailwind CSS, and shadcn/ui.',
+        strengths: 'Excellent for accelerating UI workflow, high-quality output, great free tier.',
+        weaknesses: 'Not a full application builder; requires integration into an existing project.',
+        codeExport: true,
+    },
+    {
+        id: 'bubble',
+        name: 'Bubble.io',
+        category: 'AI-Enhanced No-Code',
+        role: ['Non-Technical Founder', 'Business Team'],
+        features: ['Full-Stack', 'Scalable'],
+        tagline: 'Powerful no-code platform with AI to generate app foundations.',
+        price: 29,
+        freemium: 'Full-featured building/learning environment, but no live deployment.',
+        stack: 'Proprietary visual development environment and managed backend.',
+        strengths: 'Extremely powerful and scalable for complex apps, mature platform, large ecosystem.',
+        weaknesses: 'No code export ("vendor lock-in"), steep learning curve.',
+        codeExport: false,
+    },
+    {
+        id: 'glide',
+        name: 'Glide',
+        category: 'Business Tool Builder',
+        role: ['Business Team'],
+        features: ['Internal Tools', 'Data-Driven'],
+        tagline: 'Create polished, mobile-first apps from existing data sources like Google Sheets.',
+        price: 60,
+        freemium: 'Free plan for individual use with limited features.',
+        stack: 'Connects to various data sources (Google Sheets, Airtable, SQL).',
+        strengths: 'Exceptionally easy to use, beautiful output, great for internal business tools.',
+        weaknesses: 'Less flexible for public-facing apps, primarily for internal use.',
+        codeExport: false,
+    },
+    {
+        id: 'uibakery',
+        name: 'UI Bakery',
+        category: 'Business Tool Builder',
+        role: ['Business Team', 'Developer'],
+        features: ['Internal Tools', 'Data-Driven', 'Code Export (Self-hosted)'],
+        tagline: 'Low-code platform for sophisticated internal tools, admin panels, and dashboards.',
+        price: 10,
+        freemium: 'Free for up to 5 users with feature limits.',
+        stack: 'Connects to SQL/NoSQL databases and APIs. On-premise option.',
+        strengths: 'Deep data integration, strong security controls, self-hosting option is great for enterprise.',
+        weaknesses: 'Focused specifically on internal tools.',
+        codeExport: true,
+    },
+    {
+        id: 'wix',
+        name: 'Wix',
+        category: 'AI-Assisted Website Builder',
+        role: ['Small Business'],
+        features: ['Website Builder'],
+        tagline: 'Leading website builder using AI to generate tailored sites via a chat interview.',
+        price: 17,
+        freemium: 'Functional free plan with Wix branding and subdomain.',
+        stack: 'Proprietary Wix editor environment.',
+        strengths: 'Powerful editor, huge template library, strong e-commerce features.',
+        weaknesses: 'Not for custom web applications, no code export.',
+        codeExport: false,
+    },
+    {
+        id: 'durable',
+        name: 'Durable',
+        category: 'AI-Assisted Website Builder',
+        role: ['Small Business'],
+        features: ['Website Builder', 'Rapid MVP'],
+        tagline: 'Builds a complete website with copy and images in 30 seconds.',
+        price: 12,
+        freemium: 'Limited free plan with 3 pages and a subdomain.',
+        stack: 'Proprietary builder with integrated CRM and invoicing.',
+        strengths: 'Incredibly fast setup, ideal for service-based businesses needing an online presence instantly.',
+        weaknesses: 'Less customization than other website builders.',
+        codeExport: false,
+    }
+];
+
+const decisionMatrixData = {
+    headers: ["Max Speed for Non-Coders", "Full Developer Control", "Scalability & Managed Service", "Data-Driven Business Logic"],
+    rows: [
+        { type: "Quick MVP / Prototype", recs: ["lovable", "bolt", "bubble", "glide"] },
+        { type: "Production-Grade Web App", recs: [null, "bolt", "bubble", null] },
+        { type: "Data-Driven Internal Tool", recs: ["glide", "uibakery", null, "uibakery"] },
+        { type: "Frontend UI Components Only", recs: [null, "v0", null, null] },
+        { type: "Simple Marketing Website", recs: ["durable", null, "wix", null] },
+    ]
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const toolGrid = document.getElementById('tool-grid');
+    const categoryFiltersContainer = document.getElementById('category-filters');
+    const roleFiltersContainer = document.getElementById('role-filters');
+    const featureFiltersContainer = document.getElementById('feature-filters');
+    const decisionMatrixContainer = document.getElementById('decision-matrix');
+    
+    let activeFilters = {
+        category: 'All',
+        role: 'All',
+        feature: 'All'
+    };
+
+    function getUniqueValues(key) {
+        const allValues = toolData.flatMap(tool => tool[key]);
+        return ['All', ...new Set(allValues)];
+    }
+
+    function createFilterButtons(container, values, filterKey) {
+        container.innerHTML = '';
+        values.forEach(value => {
+            const button = document.createElement('button');
+            button.className = 'px-4 py-2 text-sm font-medium border rounded-full transition-colors duration-200';
+            if (activeFilters[filterKey] === value) {
+                button.classList.add('active-filter');
+            } else {
+                button.classList.add('bg-white', 'text-slate-600', 'border-slate-300', 'hover:bg-slate-100');
+            }
+            button.textContent = value;
+            button.dataset.filter = value;
+            button.dataset.key = filterKey;
+            button.addEventListener('click', handleFilterClick);
+            container.appendChild(button);
+        });
+    }
+
+    function handleFilterClick(e) {
+        const { filter, key } = e.target.dataset;
+        activeFilters[key] = filter;
+        const inactiveClasses = ['bg-white', 'text-slate-600', 'border-slate-300', 'hover:bg-slate-100'];
+
+        document.querySelectorAll(`#${key}-filters button`).forEach(btn => {
+            btn.classList.remove('active-filter');
+            btn.classList.add(...inactiveClasses);
+        });
+        
+        e.target.classList.add('active-filter');
+        e.target.classList.remove(...inactiveClasses);
+
+        renderTools();
+    }
+
+    function renderTools() {
+        toolGrid.innerHTML = '';
+        const filteredData = toolData.filter(tool => {
+            const categoryMatch = activeFilters.category === 'All' || tool.category === activeFilters.category;
+            const roleMatch = activeFilters.role === 'All' || tool.role.includes(activeFilters.role);
+            const featureMatch = activeFilters.feature === 'All' || tool.features.includes(activeFilters.feature);
+            return categoryMatch && roleMatch && featureMatch;
+        });
+
+        if (filteredData.length === 0) {
+            toolGrid.innerHTML = `<p class="col-span-full text-center text-slate-500">No tools match the selected filters.</p>`;
+            return;
+        }
+
+        filteredData.forEach(tool => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md p-6 flex flex-col cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300';
+            card.dataset.toolId = tool.id;
+            
+            card.innerHTML = `
+                <h3 class="text-xl font-bold text-slate-900">${tool.name}</h3>
+                <p class="text-sm text-slate-500 mt-1">${tool.category}</p>
+                <p class="mt-4 text-slate-600 flex-grow">${tool.tagline}</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    ${tool.role.map(r => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${r}</span>`).join('')}
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center">
+                    <span class="text-lg font-semibold text-slate-800">$${tool.price}<span class="text-sm font-normal text-slate-500">/mo+</span></span>
+                    <span class="text-sm font-medium ${tool.codeExport ? 'text-green-600' : 'text-red-600'}">${tool.codeExport ? 'Code Export' : 'No Code Export'}</span>
+                </div>
+            `;
+            card.addEventListener('click', () => showModal(tool.id));
+            toolGrid.appendChild(card);
+        });
+    }
+    
+    function renderDecisionMatrix() {
+        let tableHTML = `<table class="min-w-full bg-white border border-slate-200 text-left">`;
+        
+        tableHTML += `<thead><tr class="bg-slate-50">
+            <th class="p-3 font-semibold text-sm text-slate-600 border-b">Project Goal / Driver →</th>
+            ${decisionMatrixData.headers.map(h => `<th class="p-3 font-semibold text-sm text-slate-600 border-b">${h}</th>`).join('')}
+        </tr></thead>`;
+        
+        tableHTML += `<tbody>`;
+        decisionMatrixData.rows.forEach(row => {
+            tableHTML += `<tr class="border-b border-slate-200">
+                <td class="p-3 font-medium text-slate-800">${row.type}</td>
+                ${row.recs.map(recId => {
+                    const tool = toolData.find(t => t.id === recId);
+                    if (tool) {
+                        return `<td class="p-3"><button data-tool-id="${tool.id}" class="decision-cell w-full h-full text-center px-3 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition">${tool.name}</button></td>`;
+                    } else {
+                        return `<td class="p-3 text-center text-slate-400">-</td>`;
+                    }
+                }).join('')}
+            </tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        
+        decisionMatrixContainer.innerHTML = tableHTML;
+
+        document.querySelectorAll('.decision-cell').forEach(cell => {
+            cell.addEventListener('click', (e) => {
+                const toolId = e.target.dataset.toolId;
+                const toolElement = document.querySelector(`[data-tool-id="${toolId}"]`);
+                
+                document.querySelectorAll('#tool-grid > div').forEach(card => {
+                   card.style.transform = '';
+                   card.style.boxShadow = '';
+                });
+
+                if (toolElement) {
+                   toolElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                   toolElement.style.transform = 'scale(1.05)';
+                   toolElement.style.boxShadow = '0 0 0 4px #387ADF';
+                }
+            });
+        });
+    }
+
+    function renderPricingChart() {
+        const ctx = document.getElementById('pricingChart').getContext('2d');
+        const chartData = toolData.filter(t => t.price > 0).sort((a,b) => a.price - b.price);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartData.map(t => t.name),
+                datasets: [{
+                    label: 'Starting Price ($/month)',
+                    data: chartData.map(t => t.price),
+                    backgroundColor: 'rgba(56, 122, 223, 0.7)',
+                    borderColor: 'rgba(56, 122, 223, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.x);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Monthly Price (USD)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    function showModal(toolId) {
+        const tool = toolData.find(t => t.id === toolId);
+        if (!tool) return;
+        
+        modalTitle.textContent = tool.name;
+        modalBody.innerHTML = `
+            <div class="space-y-6">
+                <div>
+                    <h4 class="font-semibold text-slate-800">Core Philosophy</h4>
+                    <p class="mt-1 text-slate-600">${tool.tagline}</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-800">Technology Stack</h4>
+                    <p class="mt-1 text-slate-600">${tool.stack}</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold text-slate-800">Pricing</h4>
+                    <p class="mt-1 text-slate-600"><span class="font-medium">Starts at $${tool.price}/month.</span> Freemium: ${tool.freemium}</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-green-50 p-4 rounded-lg">
+                         <h4 class="font-semibold text-green-800">Key Strengths</h4>
+                         <p class="mt-1 text-green-700">${tool.strengths}</p>
+                    </div>
+                     <div class="bg-red-50 p-4 rounded-lg">
+                         <h4 class="font-semibold text-red-800">Key Weaknesses</h4>
+                         <p class="mt-1 text-red-700">${tool.weaknesses}</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-800">Ideal For</h4>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                         ${tool.role.map(r => `<span class="text-sm bg-slate-200 text-slate-800 px-3 py-1 rounded-full">${r}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('.modal-content').classList.remove('-translate-y-10');
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('.modal-content').classList.add('-translate-y-10');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    createFilterButtons(categoryFiltersContainer, getUniqueValues('category'), 'category');
+    createFilterButtons(roleFiltersContainer, getUniqueValues('role'), 'role');
+    createFilterButtons(featureFiltersContainer, getUniqueValues('features'), 'feature');
+    renderTools();
+    renderDecisionMatrix();
+    renderPricingChart();
+});
+</script>
+</body>
+</html>
