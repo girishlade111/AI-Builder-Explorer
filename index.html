@@ -203,31 +203,143 @@ const toolData = [
         codeExport: true,
     },
     {
-        id: 'replit',
-        name: 'Replit Agent',
+        id: 'devin',
+        name: 'Devin by Cognition',
         category: 'AI-Native Generator',
-        role: ['Developer', 'Non-Technical Founder'],
-        features: ['Full-Stack', 'Code Export (GitHub)', 'In-Browser IDE', 'Rapid MVP'],
-        tagline: 'An entire team of software engineers on demand in a mature cloud IDE.',
+        role: ['Developer', 'Product Team'],
+        features: ['Full-Stack', 'Agentic Workflows', 'Task Automation'],
+        tagline: 'The first AI software engineer, capable of handling entire development projects.',
         price: 20,
-        freemium: 'Limited Agent trial and basic AI assistance.',
-        stack: 'Any Node.js framework within the Replit cloud environment.',
-        strengths: 'Mature platform, builds from screenshots, collaborative, targets a wide audience.',
-        weaknesses: 'Full AI agent power requires a paid plan.',
+        freemium: 'Early access with a pay-as-you-go plan starting at $20.',
+        stack: 'Agentic system that can use various tools and technologies as needed.',
+        strengths: 'Can complete complex engineering tasks end-to-end, learns from feedback, high success rate on benchmarks.',
+        weaknesses: 'Currently in early access, pricing model based on "Agent Compute Units" can be complex.',
         codeExport: true,
     },
     {
-        id: 'softgen',
-        name: 'Softgen',
+        id: 'tempo',
+        name: 'Tempo',
         category: 'AI-Native Generator',
-        role: ['Developer', 'Product Team'],
-        features: ['Full-Stack', 'Code Export (GitHub)', 'In-Browser IDE', 'Rapid MVP'],
-        tagline: 'Create production-ready Full Stack Web Apps with a built-in IDE for edits.',
-        price: 25,
-        freemium: '100k tokens for 1 project (no Supabase).',
-        stack: 'Next.js frontend, integrates with Supabase and Firebase.',
-        strengths: 'Generates modern stack, allows manual code editing, good for startups.',
-        weaknesses: 'Free tier is very limited (lacks backend integration).',
+        role: ['Developer', 'Designer'],
+        features: ['Full-Stack', 'Visual Editor', 'Code Export (GitHub)'],
+        tagline: 'AI that designs and builds React applications, combining generation with a visual editor.',
+        price: 30,
+        freemium: 'Free plan with 30 prompts (max 5 per day).',
+        stack: 'Generates React applications.',
+        strengths: 'Blends AI generation with visual editing, allows for human-in-the-loop refinement, offers agent plans for feature development.',
+        weaknesses: 'Focused specifically on React, prompt limits on free/lower tiers.',
+        codeExport: true,
+    },
+    {
+        id: 'youwere',
+        name: 'Youwere',
+        category: 'AI-Native Generator',
+        role: ['Non-Technical Founder', 'Developer', 'Hobbyist'],
+        features: ['Rapid MVP', 'Community Sharing', 'Drag & Drop Upload'],
+        tagline: 'The first AI coding community where creators build and share custom AI apps in one command.',
+        price: 0,
+        freemium: 'Appears to be free during its beta phase.',
+        stack: 'Web-based generation platform.',
+        strengths: 'Strong community focus for sharing and inspiration, very low barrier to entry, can build from prompts or by uploading existing files.',
+        weaknesses: 'Beta product, long-term scalability and feature depth are unknown.',
+        codeExport: true,
+    },
+    {
+        id: 'cursor',
+        name: 'Cursor',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['AI Code Editor', 'Agentic Chat', 'Codebase-aware AI'],
+        tagline: 'The AI-first code editor. A fork of VS Code built for pair-programming with AI.',
+        price: 20,
+        freemium: 'Free "Hobby" plan with limited agent requests and tab completions.',
+        stack: 'VS Code-based editor with integrated AI models (GPT-4, Claude, etc.).',
+        strengths: 'Deeply integrated AI in a familiar editor environment, codebase-aware context, fast auto-completion.',
+        weaknesses: 'Primary value is in paid plans; usage limits on free tier.',
+        codeExport: true,
+    },
+    {
+        id: 'warp',
+        name: 'Warp',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['AI Terminal', 'Command Workflows', 'Team Collaboration'],
+        tagline: 'A blazingly fast, Rust-based terminal reimagined from the ground up with AI and collaboration.',
+        price: 15,
+        freemium: 'Free plan with up to 150 AI requests per month.',
+        stack: 'Rust-based terminal application for macOS and Linux.',
+        strengths: 'Modern terminal UX, integrated AI for debugging and command generation, shareable workflows.',
+        weaknesses: 'AI features are metered and require a paid plan for heavy use.',
+        codeExport: true,
+    },
+    {
+        id: 'wave',
+        name: 'Wave Terminal',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['AI Terminal', 'Open Source', 'Inline Editors'],
+        tagline: 'An open-source, cross-platform terminal for seamless, AI-assisted workflows.',
+        price: 0,
+        freemium: 'Fully free and open source.',
+        stack: 'Go and TypeScript-based terminal for macOS, Linux, and Windows.',
+        strengths: 'Completely free, open source, supports multiple AI models (OpenAI, Claude, Ollama), flexible UI.',
+        weaknesses: 'As an open-source project, support is community-driven.',
+        codeExport: true,
+    },
+    {
+        id: 'gemini-cli',
+        name: 'Gemini CLI',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['AI Terminal', 'Open Source', 'Large Context Window'],
+        tagline: 'Google\'s open-source AI agent to bring Gemini Pro to your command line.',
+        price: 0,
+        freemium: 'Free with a personal Google account, offering a very generous usage allowance.',
+        stack: 'Command-line interface for interacting with Google\'s Gemini models.',
+        strengths: 'Massive 1 million token context window, extremely generous free tier, extensible.',
+        weaknesses: 'Requires command-line proficiency; less of a GUI-based tool.',
+        codeExport: true,
+    },
+    {
+        id: 'windsurf',
+        name: 'Windsurf AI',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['AI Code Editor', 'Agentic Workflows', 'Automated Debugging'],
+        tagline: 'An agentic code editor that understands your entire project to automate changes and fix bugs.',
+        price: 0,
+        freemium: 'Pricing not publicly listed, likely has a free/trial tier.',
+        stack: 'Desktop code editor with multiple AI model integrations (Claude, Gemini, etc.).',
+        strengths: 'Advanced agentic capabilities (Cascade mode), automated bug fixing and iteration, contextual understanding of the entire project.',
+        weaknesses: 'Newer tool, pricing and long-term support model are not as established as competitors like Cursor.',
+        codeExport: true,
+    },
+    {
+        id: 'trae',
+        name: 'Trae AI',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer'],
+        features: ['Open Source', 'Task Automation', 'Code Generation'],
+        tagline: 'An IDE for software development through automated assistance and code generation.',
+        price: 0,
+        freemium: 'Free and open source (GitHub/Colab project).',
+        stack: 'Google Colab/Python-based environment.',
+        strengths: 'Completely free, automates task breakdown and code analysis.',
+        weaknesses: 'Not a polished SaaS product, requires technical setup, community-driven support.',
+        codeExport: true,
+    },
+    {
+        id: 'llamacoder',
+        name: 'Llama Coder',
+        category: 'AI-Powered Developer Environment',
+        role: ['Developer', 'Researcher'],
+        features: ['Open Source', 'Code Generation', 'Multi-language Support'],
+        tagline: 'An open-source AI tool based on Code Llama for code generation, completion, and refactoring.',
+        price: 0,
+        freemium: 'Completely free and open source.',
+        stack: 'Based on Meta\'s Code Llama models; can be integrated into various IDEs.',
+        strengths: 'Free, open, and flexible; supports multiple programming languages; can be self-hosted and customized.',
+        weaknesses: 'Requires manual integration and setup; not a polished, all-in-one platform.',
         codeExport: true,
     },
     {
@@ -265,7 +377,7 @@ const toolData = [
         role: ['Business Team'],
         features: ['Internal Tools', 'Data-Driven'],
         tagline: 'Create polished, mobile-first apps from existing data sources like Google Sheets.',
-        price: 60,
+        price: 49,
         freemium: 'Free plan for individual use with limited features.',
         stack: 'Connects to various data sources (Google Sheets, Airtable, SQL).',
         strengths: 'Exceptionally easy to use, beautiful output, great for internal business tools.',
@@ -273,18 +385,46 @@ const toolData = [
         codeExport: false,
     },
     {
-        id: 'uibakery',
-        name: 'UI Bakery',
+        id: 'softr',
+        name: 'Softr',
         category: 'Business Tool Builder',
-        role: ['Business Team', 'Developer'],
-        features: ['Internal Tools', 'Data-Driven', 'Code Export (Self-hosted)'],
-        tagline: 'Low-code platform for sophisticated internal tools, admin panels, and dashboards.',
-        price: 10,
-        freemium: 'Free for up to 5 users with feature limits.',
-        stack: 'Connects to SQL/NoSQL databases and APIs. On-premise option.',
-        strengths: 'Deep data integration, strong security controls, self-hosting option is great for enterprise.',
-        weaknesses: 'Focused specifically on internal tools.',
-        codeExport: true,
+        role: ['Business Team', 'Non-Technical Founder'],
+        features: ['Internal Tools', 'Client Portals', 'Data-Driven'],
+        tagline: 'The easiest way to build custom web apps from your data in Airtable or Google Sheets.',
+        price: 59,
+        freemium: 'Free plan for 1 app with up to 10 internal users.',
+        stack: 'Connects to Airtable, Google Sheets, HubSpot, and SQL databases.',
+        strengths: 'Very user-friendly, great for building marketplaces, client portals, and internal tools.',
+        weaknesses: 'Primarily for data-driven apps; less flexible for other use cases.',
+        codeExport: false,
+    },
+    {
+        id: 'rabit',
+        name: 'Rabit AI',
+        category: 'Business Tool Builder',
+        role: ['Business Team', 'Enterprise'],
+        features: ['Custom LLM Training', 'Data Annotation', 'Enterprise AI'],
+        tagline: 'Develop reliable, custom Generative AI solutions for your enterprise using your own data.',
+        price: 0,
+        freemium: 'Contact for pricing and demo.',
+        stack: 'Proprietary platform for building and fine-tuning LLMs.',
+        strengths: 'Focus on enterprise-grade data security and ownership, creates custom models tailored to specific business needs.',
+        weaknesses: 'Not a self-serve tool for general app building; requires consultation and significant investment.',
+        codeExport: false,
+    },
+    {
+        id: 'framer',
+        name: 'Framer',
+        category: 'AI-Assisted Website Builder',
+        role: ['Designer', 'Small Business'],
+        features: ['Website Builder', 'AI Site Generation', 'Interactive Components'],
+        tagline: 'The professional website builder for designers. Go from idea to publish, with AI.',
+        price: 19,
+        freemium: 'Free plan for hobby projects, includes Framer branding.',
+        stack: 'Web-based design and publishing tool.',
+        strengths: 'Superior design and animation capabilities, AI to generate and improve sites, great for interactive portfolios.',
+        weaknesses: 'Not for building complex web applications with backend logic.',
+        codeExport: false,
     },
     {
         id: 'wix',
@@ -316,14 +456,15 @@ const toolData = [
     }
 ];
 
+
 const decisionMatrixData = {
     headers: ["Max Speed for Non-Coders", "Full Developer Control", "Scalability & Managed Service", "Data-Driven Business Logic"],
     rows: [
         { type: "Quick MVP / Prototype", recs: ["lovable", "bolt", "bubble", "glide"] },
-        { type: "Production-Grade Web App", recs: [null, "bolt", "bubble", null] },
-        { type: "Data-Driven Internal Tool", recs: ["glide", "uibakery", null, "uibakery"] },
-        { type: "Frontend UI Components Only", recs: [null, "v0", null, null] },
-        { type: "Simple Marketing Website", recs: ["durable", null, "wix", null] },
+        { type: "Production-Grade Web App", recs: ["tempo", "devin", "bubble", null] },
+        { type: "Data-Driven Internal Tool", recs: ["glide", "bolt", "softr", "softr"] },
+        { type: "Frontend UI Components Only", recs: ["framer", "v0", null, null] },
+        { type: "Simple Marketing Website", recs: ["durable", "framer", "wix", null] },
     ]
 };
 
@@ -333,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleFiltersContainer = document.getElementById('role-filters');
     const featureFiltersContainer = document.getElementById('feature-filters');
     const decisionMatrixContainer = document.getElementById('decision-matrix');
+    let pricingChartInstance = null;
     
     let activeFilters = {
         category: 'All',
@@ -406,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${tool.role.map(r => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${r}</span>`).join('')}
                 </div>
                 <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center">
-                    <span class="text-lg font-semibold text-slate-800">$${tool.price}<span class="text-sm font-normal text-slate-500">/mo+</span></span>
+                    <span class="text-lg font-semibold text-slate-800">${tool.price > 0 ? `$${tool.price}` : 'Free'}<span class="text-sm font-normal text-slate-500">${tool.price > 0 ? '/mo+' : ''}</span></span>
                     <span class="text-sm font-medium ${tool.codeExport ? 'text-green-600' : 'text-red-600'}">${tool.codeExport ? 'Code Export' : 'No Code Export'}</span>
                 </div>
             `;
@@ -461,10 +603,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPricingChart() {
+        if (pricingChartInstance) {
+            pricingChartInstance.destroy();
+        }
         const ctx = document.getElementById('pricingChart').getContext('2d');
         const chartData = toolData.filter(t => t.price > 0).sort((a,b) => a.price - b.price);
         
-        new Chart(ctx, {
+        pricingChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: chartData.map(t => t.name),
@@ -534,7 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                  <div>
                     <h4 class="font-semibold text-slate-800">Pricing</h4>
-                    <p class="mt-1 text-slate-600"><span class="font-medium">Starts at $${tool.price}/month.</span> Freemium: ${tool.freemium}</p>
+                    <p class="mt-1 text-slate-600"><span class="font-medium">${tool.price > 0 ? `Starts at $${tool.price}/month.` : 'Free'}</span> Freemium: ${tool.freemium}</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-green-50 p-4 rounded-lg">
@@ -571,12 +716,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    createFilterButtons(categoryFiltersContainer, getUniqueValues('category'), 'category');
-    createFilterButtons(roleFiltersContainer, getUniqueValues('role'), 'role');
-    createFilterButtons(featureFiltersContainer, getUniqueValues('features'), 'feature');
-    renderTools();
-    renderDecisionMatrix();
-    renderPricingChart();
+    function initializeApp() {
+        createFilterButtons(categoryFiltersContainer, getUniqueValues('category'), 'category');
+        createFilterButtons(roleFiltersContainer, getUniqueValues('role'), 'role');
+        createFilterButtons(featureFiltersContainer, getUniqueValues('features'), 'feature');
+        renderTools();
+        renderDecisionMatrix();
+        renderPricingChart();
+    }
+    
+    initializeApp();
 });
 </script>
 </body>
